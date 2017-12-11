@@ -22,10 +22,5 @@ function secondTask(data) {
   console.log(`second task: ${sum}`);
 }
 
-let readFile = require('../util/readFile.js');
-
-readFile('day1-1.txt', firstTask);
-readFile('day1-2.txt', secondTask);
-
 module.exports.firstTask = firstTask;
 module.exports.secondTask = secondTask;
