@@ -35,10 +35,6 @@ function secondTask(data) {
 }
 
 const _ = require("lodash");
-const readFile = require('../util/readFile.js');
-
-readFile('day4-1.txt', firstTask);
-readFile('day4-1.txt', secondTask);
 
 module.exports.firstTask = firstTask;
 module.exports.secondTask = secondTask;
