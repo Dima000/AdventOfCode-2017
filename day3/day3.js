@@ -9,17 +9,60 @@ function firstTask(data) {
   }
 
   let stepsOnCircle = Math.abs((sum - nr) % (2 * n) - n);
-  let steps = n + stepsOnCircle;
-
-  console.log(`first task: ${steps}`);
+  return n + stepsOnCircle;
 }
 
 function secondTask(data) {
-  let sum = 0;
+  let N = 500,
+      max = 0,
+      x = 0,
+      y = 0;
 
+  let matrix = math.zeros(2 * N, 2 * N);
+  matrix.set([N - x, N - y], 1);
 
-  console.log(`second task: ${sum}`);
+  while (true) {
+    setNextIndex();
+    let newIndexValue = getNeighboursSum();
+    matrix.set([N - x, N - y], newIndexValue);
+
+    if (newIndexValue > +data) {
+      return newIndexValue;
+    }
+  }
+
+  function getNeighboursSum() {
+    let sum = 0;
+    for (let i = -1; i <= 1; i++)
+      for (let j = -1; j <= 1; j++) {
+        if (!i && !j) continue;
+        sum += matrix.get([N - (x + i), N - (y + j)]);
+      }
+
+    return sum;
+  }
+
+  function setNextIndex() {
+    if (x === max && y === -max) {
+      x++;
+      max++;
+    }
+    else if (x === max && y < max) {
+      y++;
+    }
+    else if (x > -max && y === max) {
+      x--;
+    }
+    else if (x === -max && y > -max) {
+      y--;
+    }
+    else if (x < max && y === -max) {
+      x++;
+    }
+  }
 }
+
+const math = require('mathjs');
 
 module.exports.firstTask = firstTask;
 module.exports.secondTask = secondTask;
