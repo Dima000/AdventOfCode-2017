@@ -20,14 +20,18 @@ function firstTask(data) {
   function findUnbalancedValue(towerKey) {
     let tower = towerStore.get(towerKey);
 
+    if (!tower.children.length || diff) {
+      return;
+    }
+
+    tower.children.forEach(childKey => {
+      findUnbalancedValue(childKey);
+    });
+
     let childrenWeights = tower.children.map(childKey => towerStore.get(childKey).weight);
     let allEqual = _.uniq(childrenWeights).length <= 1;
 
-    if (allEqual && !diff) {
-      tower.children.forEach(childKey => {
-        findUnbalancedValue(childKey);
-      });
-    } else {
+    if (!allEqual) {
       let uniqValues = _.uniq(childrenWeights);
       diff = Math.abs(uniqValues[0] - uniqValues[1]);
     }
@@ -44,9 +48,10 @@ function firstTask(data) {
       computeTowerWeights(childKey)
     });
 
-    return tower.children.reduce((acc, childKey) => {
+    tower.weight = tower.children.reduce((acc, childKey) => {
       return acc + towerStore.get(childKey).weight;
     }, tower.weight);
+
   }
 
   function parseTowers(lines) {
