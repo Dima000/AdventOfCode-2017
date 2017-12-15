@@ -1,41 +1,77 @@
 function firstTask(data) {
-  let lines = data.split('\n');
-  let store = new Map();
+  let towerStore = new Map(),
+      allChildren = new Set(),
+      allTowers = new Set();
 
-  let allChildren = new Set();
-  let allTowers = new Set();
+  parseTowers(data.split('\n'));
 
-  for (let l of lines) {
-    let parts = l.split('->');
-    let objectProperties = parts[0].split(' ');
-    let children = parts[1] ? parts[1].trim().split(',') : [];
+  // first task
+  let topTower = Array.from(allTowers.values()).filter(x => !allChildren.has(x))[0];
+  console.log('First task: ' + topTower);
 
-    let tower = {
-      key: objectProperties[0],
-      weight: objectProperties[1].search(/\d+/g),
-      children: children
-    };
+  //second task
+  let diff = null;
+  computeTowerWeights(topTower);
+  findUnbalancedValue(topTower);
+  console.log('Second task: ' + diff);
 
-    store.set(tower.key, tower);
 
-    if(children.length) {
-      allChildren.add([...children]);
+  // functions
+  function findUnbalancedValue(towerKey) {
+    let tower = towerStore.get(towerKey);
+
+    let childrenWeights = tower.children.map(childKey => towerStore.get(childKey).weight);
+    let allEqual = _.uniq(childrenWeights).length <= 1;
+
+    if (allEqual && !diff) {
+      tower.children.forEach(childKey => {
+        findUnbalancedValue(childKey);
+      });
+    } else {
+      let uniqValues = _.uniq(childrenWeights);
+      diff = Math.abs(uniqValues[0] - uniqValues[1]);
     }
-    allTowers.add(tower.key);
   }
 
+  function computeTowerWeights(towerKey) {
+    let tower = towerStore.get(towerKey);
 
-  let difference = [...allTowers].filter(x => !allChildren.has(x));
-  return difference;
-}
+    if (!tower.children.length) {
+      return tower.weight;
+    }
 
-function secondTask(data) {
+    tower.children.forEach(childKey => {
+      computeTowerWeights(childKey)
+    });
 
+    return tower.children.reduce((acc, childKey) => {
+      return acc + towerStore.get(childKey).weight;
+    }, tower.weight);
+  }
 
-  return 2;
+  function parseTowers(lines) {
+    for (let l of lines) {
+      let parts = l.split('->');
+      let objectProperties = parts[0].split(' ');
+      let children = parts[1] ? parts[1].trim().split(',').map(v => v.trim()) : [];
+
+      let tower = {
+        key: objectProperties[0],
+        weight: +objectProperties[1].match(/\d+/g)[0],
+        children: children
+      };
+
+      towerStore.set(tower.key, tower);
+
+      children.forEach(item => {
+        allChildren.add(item);
+      });
+      allTowers.add(tower.key);
+    }
+  }
+
 }
 
 let _ = require('lodash');
 
 module.exports.firstTask = firstTask;
-module.exports.secondTask = secondTask;

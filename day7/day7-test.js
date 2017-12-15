@@ -17,5 +17,5 @@ let test1 =
     'gyxo (61)\n' +
     'cntj (57)';
 
-console.log('test1:');
-source.firstTask(test1); //result tknk
+console.log('test1:'); //first task: tknk    //second task: 8
+source.firstTask(test1);
