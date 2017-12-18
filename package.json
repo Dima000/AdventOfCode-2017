@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Dima000/AdventOfCode-2017#readme",
   "dependencies": {
     "lodash": "^4.17.4",
-    "mathjs": "^3.17.0"
+    "mathjs": "^3.17.0",
+    "standard": "^10.0.3"
   }
 }
