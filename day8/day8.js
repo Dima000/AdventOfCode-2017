@@ -34,20 +34,22 @@ function firstTask (data) {
 
   function evalCondition (firstValue, sign, secondValue) {
     switch (sign) {
-      case '==': return firstValue === +secondValue
-      case '!=': return firstValue !== +secondValue
-      case '>': return firstValue > +secondValue
-      case '>=': return firstValue >= +secondValue
-      case '<': return firstValue < +secondValue
-      case '<=': return firstValue <= +secondValue
-      default: return false
+      case '==':
+        return firstValue === +secondValue
+      case '!=':
+        return firstValue !== +secondValue
+      case '>':
+        return firstValue > +secondValue
+      case '>=':
+        return firstValue >= +secondValue
+      case '<':
+        return firstValue < +secondValue
+      case '<=':
+        return firstValue <= +secondValue
+      default:
+        return false
     }
   }
 }
 
-function secondTask (data) {
-  return 2
-}
-
 module.exports.firstTask = firstTask
-module.exports.secondTask = secondTask
