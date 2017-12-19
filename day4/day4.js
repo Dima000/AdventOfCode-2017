@@ -1,40 +1,39 @@
-function firstTask(data) {
-  let lines = data.split('\n');
+function firstTask (data) {
+  let lines = data.split('\n')
 
   let sum = lines.reduce((sum, value) => {
-    let keys = value.split(' ');
-    return sum + (new Set(keys).size === keys.length ? 1 : 0);
-  }, 0);
+    let keys = value.split(' ')
+    return sum + (new Set(keys).size === keys.length ? 1 : 0)
+  }, 0)
 
-  console.log(`first task: ${sum}`);
+  console.log(`first task: ${sum}`)
 }
 
-function secondTask(data) {
-  let lines = data.split('\n');
+function secondTask (data) {
+  let lines = data.split('\n')
 
   let sum = lines.reduce((sum, value) => {
-    let keys = value.split(' ');
-    let sets = keys.map(value => new Set(value));
+    let keys = value.split(' ')
+    let sets = keys.map(value => new Set(value))
 
-    let valid = 1;
+    let valid = 1
     for (let i = 0; i < sets.length - 1; i++) {
-      if (!valid) break;
+      if (!valid) break
       for (let j = i + 1; j < sets.length; j++) {
         if (_.isEqual(sets[i], sets[j])) {
-          valid = 0;
-          break;
+          valid = 0
+          break
         }
       }
     }
 
-    return sum + valid;
-  }, 0);
+    return sum + valid
+  }, 0)
 
-
-  console.log(`second task: ${sum}`);
+  console.log(`second task: ${sum}`)
 }
 
-const _ = require("lodash");
+const _ = require('lodash')
 
-module.exports.firstTask = firstTask;
-module.exports.secondTask = secondTask;
+module.exports.firstTask = firstTask
+module.exports.secondTask = secondTask
