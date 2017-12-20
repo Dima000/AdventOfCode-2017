@@ -1,17 +1,104 @@
-function firstTask (data) {
-  let countMap = new Map()
+let dirMap = {
+  n: {opposite: 's', merge1: {helper: 'se', target: 'ne'}, merge2: {helper: 'sw', target: 'nw'}},
+  ne: {opposite: 'sw', merge1: {helper: 's', target: 'se'}, merge2: {helper: 'nw', target: 'n'}},
+  se: {opposite: 'nw', merge1: {helper: 'n', target: 'ne'}, merge2: {helper: 'sw', target: 's'}},
+  s: {opposite: 'n', merge1: {helper: 'nw', target: 'sw'}, merge2: {helper: 'ne', target: 'se'}},
+  sw: {opposite: 'ne', merge1: {helper: 'se', target: 's'}, merge2: {helper: 'n', target: 'nw'}},
+  nw: {opposite: 'se', merge1: {helper: 'ne', target: 'n'}, merge2: {helper: 's', target: 'sw'}}
+}
 
-  for (let dir of data.split(',')) {
-    if (!countMap.has(dir)) {
-      countMap.set(dir, 1)
+function firstTask (data) {
+  let stepsMap = new Map()
+
+  populateMap(stepsMap, data)
+
+  while (canReduce(stepsMap)) {
+    let dir = minStepsDir(stepsMap)
+
+    if (stepsMap.get(dirMap[dir].opposite)) {
+      reduceValues(dir, dirMap[dir].opposite, stepsMap)
     } else {
-      countMap.set(dir, countMap.get(dir) + 1)
+      mergeValues(dir, dirMap[dir].merge1.helper, dirMap[dir].merge1.target, stepsMap)
+      mergeValues(dir, dirMap[dir].merge2.helper, dirMap[dir].merge2.target, stepsMap)
     }
   }
+
+  return Array.from(stepsMap.values()).reduce((acc, value) => acc + value, 0)
 }
 
 function secondTask (data) {
 
+}
+
+function populateMap (stepsMap, data) {
+  stepsMap.set('n', 0)
+  stepsMap.set('ne', 0)
+  stepsMap.set('se', 0)
+  stepsMap.set('s', 0)
+  stepsMap.set('sw', 0)
+  stepsMap.set('nw', 0)
+
+  for (let dir of data.split(',')) {
+    stepsMap.set(dir, stepsMap.get(dir) + 1)
+  }
+}
+
+function reduceValues (keyA, keyB, map) {
+  let valA = map.get(keyA)
+  let valB = map.get(keyB)
+  let reduceBy = Math.min(valA, valB)
+
+  map.set(keyA, valA - reduceBy)
+  map.set(keyB, valB - reduceBy)
+}
+
+function mergeValues (keyA, keyB, keyC, map) {
+  let valA = map.get(keyA)
+  let valB = map.get(keyB)
+  let mergeBy = Math.min(valA, valB)
+
+  map.set(keyA, valA - mergeBy)
+  map.set(keyB, valB - mergeBy)
+  map.set(keyC, mergeBy + map.get(keyC))
+}
+
+// return direction that has fewest steps
+function minStepsDir (stepsMap) {
+  let dir = null
+  let minValue = Number.MAX_SAFE_INTEGER
+
+  for (let [key, value] of stepsMap) {
+    if (value && value < minValue) {
+      dir = key
+      minValue = value
+    }
+  }
+
+  return dir
+}
+
+// the grid can be simplified to be left with max 2 directions
+// the directions have to be near each other
+function canReduce (stepsMap) {
+  let mapValues = []
+  let directions = []
+
+  for (let [key, val] of stepsMap) {
+    if (val) {
+      mapValues.push(val)
+      directions.push(key)
+    }
+  }
+
+  if (mapValues.length <= 1) {
+    return false
+  } else if (mapValues.length === 2) {
+    let dir = dirMap[directions[0]]
+    // adjacent directions
+    return !(dir.merge1.target === directions[1] || dir.merge2.target === directions[1])
+  }
+
+  return true
 }
 
 module.exports.firstTask = firstTask
