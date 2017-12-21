@@ -11,7 +11,25 @@ function firstTask (data) {
   let stepsMap = new Map()
 
   populateMap(stepsMap, data)
+  return shortestPath(stepsMap)
+}
 
+function secondTask (data) {
+  let maxShortest = Number.MIN_SAFE_INTEGER
+  let stepsMap = new Map()
+  initMap(stepsMap)
+
+  for (let dir of data.split(',')) {
+    stepsMap.set(dir, stepsMap.get(dir) + 1)
+
+    let shortest = shortestPath(_.clone(stepsMap))
+    maxShortest = Math.max(shortest, maxShortest)
+  }
+
+  return maxShortest
+}
+
+function shortestPath (stepsMap) {
   while (canReduce(stepsMap)) {
     let dir = minStepsDir(stepsMap)
 
@@ -26,21 +44,21 @@ function firstTask (data) {
   return Array.from(stepsMap.values()).reduce((acc, value) => acc + value, 0)
 }
 
-function secondTask (data) {
+function populateMap (stepsMap, data) {
+  initMap(stepsMap)
 
+  for (let dir of data.split(',')) {
+    stepsMap.set(dir, stepsMap.get(dir) + 1)
+  }
 }
 
-function populateMap (stepsMap, data) {
+function initMap (stepsMap) {
   stepsMap.set('n', 0)
   stepsMap.set('ne', 0)
   stepsMap.set('se', 0)
   stepsMap.set('s', 0)
   stepsMap.set('sw', 0)
   stepsMap.set('nw', 0)
-
-  for (let dir of data.split(',')) {
-    stepsMap.set(dir, stepsMap.get(dir) + 1)
-  }
 }
 
 function reduceValues (keyA, keyB, map) {
@@ -100,6 +118,8 @@ function canReduce (stepsMap) {
 
   return true
 }
+
+const _ = require('lodash')
 
 module.exports.firstTask = firstTask
 module.exports.secondTask = secondTask
